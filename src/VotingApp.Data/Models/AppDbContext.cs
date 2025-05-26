@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VotingApp.Data.Models;
 
-namespace VotingApp.Models
+namespace VotingApp.Data
 {
     public class AppDbContext : DbContext
     {
@@ -8,9 +9,9 @@ namespace VotingApp.Models
         public DbSet<Option> Options { get; set; }
         public DbSet<Vote> Votes { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=VotingAppDb;Trusted_Connection=True;");
         }
     }
 }

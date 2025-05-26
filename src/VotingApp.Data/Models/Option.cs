@@ -1,4 +1,4 @@
-﻿namespace VotingApp.Models
+﻿namespace VotingApp.Data.Models
 {
     public class Option
     {
