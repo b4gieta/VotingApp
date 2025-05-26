@@ -19,8 +19,11 @@ namespace VotingApp
 
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=VotingAppDb;Trusted_Connection=True;");
+                options.UseSqlite("Data Source=VotingApp.db");
             });
+
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddSingleton<App>();
 
 #if DEBUG
             builder.Logging.AddDebug();

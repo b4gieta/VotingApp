@@ -2,40 +2,36 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using VotingApp.Data.Models;
+using VotingApp.Models;
 
 #nullable disable
 
-namespace VotingApp.Data.Migrations
+namespace VotingApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250526173649_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("VotingApp.Data.Option", b =>
+            modelBuilder.Entity("VotingApp.Models.Option", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SurveyId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -44,36 +40,32 @@ namespace VotingApp.Data.Migrations
                     b.ToTable("Options");
                 });
 
-            modelBuilder.Entity("VotingApp.Data.Survey", b =>
+            modelBuilder.Entity("VotingApp.Models.Survey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("ExpirationTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Surveys");
                 });
 
-            modelBuilder.Entity("VotingApp.Data.Vote", b =>
+            modelBuilder.Entity("VotingApp.Models.Vote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("OptionId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -82,9 +74,9 @@ namespace VotingApp.Data.Migrations
                     b.ToTable("Votes");
                 });
 
-            modelBuilder.Entity("VotingApp.Data.Option", b =>
+            modelBuilder.Entity("VotingApp.Models.Option", b =>
                 {
-                    b.HasOne("VotingApp.Data.Survey", "Survey")
+                    b.HasOne("VotingApp.Models.Survey", "Survey")
                         .WithMany("Options")
                         .HasForeignKey("SurveyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -93,9 +85,9 @@ namespace VotingApp.Data.Migrations
                     b.Navigation("Survey");
                 });
 
-            modelBuilder.Entity("VotingApp.Data.Vote", b =>
+            modelBuilder.Entity("VotingApp.Models.Vote", b =>
                 {
-                    b.HasOne("VotingApp.Data.Option", "Option")
+                    b.HasOne("VotingApp.Models.Option", "Option")
                         .WithMany("Votes")
                         .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -104,12 +96,12 @@ namespace VotingApp.Data.Migrations
                     b.Navigation("Option");
                 });
 
-            modelBuilder.Entity("VotingApp.Data.Option", b =>
+            modelBuilder.Entity("VotingApp.Models.Option", b =>
                 {
                     b.Navigation("Votes");
                 });
 
-            modelBuilder.Entity("VotingApp.Data.Survey", b =>
+            modelBuilder.Entity("VotingApp.Models.Survey", b =>
                 {
                     b.Navigation("Options");
                 });

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VotingApp.Data.Models;
 
-namespace VotingApp.Data
+namespace VotingApp.Models
 {
     public class AppDbContext : DbContext
     {
@@ -9,9 +8,21 @@ namespace VotingApp.Data
         public DbSet<Option> Options { get; set; }
         public DbSet<Vote> Votes { get; set; }
 
+        
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
+        
+        
+        /*
+        public AppDbContext() { }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "VotingApp.db");
+            optionsBuilder.UseSqlite($"Data Source={dbPath}");
+        }
+        */
     }
 }
