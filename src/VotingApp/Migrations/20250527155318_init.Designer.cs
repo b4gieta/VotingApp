@@ -11,7 +11,7 @@ using VotingApp.Models;
 namespace VotingApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250526173649_init")]
+    [Migration("20250527155318_init")]
     partial class init
     {
         /// <inheritdoc />

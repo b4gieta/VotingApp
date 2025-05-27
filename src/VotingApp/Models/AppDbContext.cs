@@ -8,21 +8,17 @@ namespace VotingApp.Models
         public DbSet<Option> Options { get; set; }
         public DbSet<Vote> Votes { get; set; }
 
-        
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
+        public AppDbContext()
         {
+            this.Database.EnsureCreated();
         }
-        
-        
-        /*
-        public AppDbContext() { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "VotingApp.db");
-            optionsBuilder.UseSqlite($"Data Source={dbPath}");
+            string dbPath = Path.Combine(FileSystem.AppDataDirectory, "VotingApp.db");
+
+            optionsBuilder.
+                UseSqlite($"Filename={dbPath}");
         }
-        */
     }
 }

@@ -1,26 +1,26 @@
 ﻿using VotingApp.Models;
 using System.Diagnostics;
-using Microsoft.EntityFrameworkCore;
 
 namespace VotingApp
 {
     public partial class MainPage : ContentPage
     {
-        AppDbContext _dbContext;
-
-        public MainPage(AppDbContext dbContext)
+        public MainPage()
         {
             InitializeComponent();
-            _dbContext = dbContext;
         }
 
         private void OnCounterClicked(object sender, EventArgs e)
         {
-            if (_dbContext.Database.CanConnect())
+            using (var context = new AppDbContext())
             {
-                CounterBtn.Text = "działa";
-            } 
-            else CounterBtn.Text = "nie działa";
+                if (context.Database.CanConnect()) CounterBtn.Text = context.Surveys.Count().ToString();
+                else CounterBtn.Text = "nie działa";
+
+                context.Surveys.Add(new Survey { Title = "aaa" });
+                context.SaveChanges();
+                Debug.WriteLine(context.Surveys.Count().ToString());
+            }
         }
     }
 }
