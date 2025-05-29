@@ -1,26 +1,27 @@
 ﻿using VotingApp.Models;
-using System.Diagnostics;
+using VotingApp.ViewModels;
 
 namespace VotingApp
 {
     public partial class MainPage : ContentPage
     {
+        private MainViewModel _viewModel;
+
         public MainPage()
         {
             InitializeComponent();
+            _viewModel = new MainViewModel();
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private void OnCheckClicked(object sender, EventArgs e)
         {
-            using (var context = new AppDbContext())
-            {
-                if (context.Database.CanConnect()) CounterBtn.Text = context.Surveys.Count().ToString();
-                else CounterBtn.Text = "nie działa";
+            if (_viewModel.SurveyExists(Check.Text)) CheckResult.Text = $"Ankieta \"{Check.Text}\" istnieje i ma {_viewModel.CountVotes(Check.Text)} głosów";
+            else CheckResult.Text = $"Ankieta \"{Check.Text}\" nie istnieje";
+        }
 
-                context.Surveys.Add(new Survey { Title = "aaa" });
-                context.SaveChanges();
-                Debug.WriteLine(context.Surveys.Count().ToString());
-            }
+        private async void OnResetClicked(object sender, EventArgs e)
+        {
+            await AppDbContext.SetStartingData();
         }
     }
 }
