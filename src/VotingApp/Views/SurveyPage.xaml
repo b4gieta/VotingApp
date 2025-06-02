@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              x:Class="VotingApp.SurveyPage"
              Title="Zagłosuj">
     <ScrollView>
@@ -14,8 +15,20 @@
                 Clicked="OnHomeClicked"
                 MaximumWidthRequest="50"/>
 
-            <Label x:Name="TitleLabel"
-            Text="Ankieta" />
+            <StackLayout Spacing="5">
+                <Label x:Name="TitleLabel"
+                    Text="Ankieta"
+                    FontSize="Medium"/>
+
+                <Label x:Name="ExpirationLabel"
+                    Text="Wygasa: "/>
+            </StackLayout>
+            
+            
+
+            <charts:ChartView x:Name="ChartView" HeightRequest="300" />
+
+            <StackLayout x:Name="VotingButtonsStack" Spacing="10" />
 
         </VerticalStackLayout>
     </ScrollView>

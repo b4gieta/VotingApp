@@ -38,7 +38,7 @@ namespace VotingApp.Models
             foreach (string o in options)
             {
                 Option op = new Option { Name = o};
-                for (int i = 0; i < rnd.Next(1, 15); i++) op.Votes.Add(new Vote());
+                for (int i = 0; i < rnd.Next(5, 15); i++) op.Votes.Add(new Vote());
                 s.Options.Add(op);
             }
             await context.Surveys.AddAsync(s);
