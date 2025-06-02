@@ -1,13 +1,16 @@
-using System.Diagnostics;
-using VotingApp.Models;
+using VotingApp.ViewModels;
 
 namespace VotingApp
 {
     public partial class CreatePage : ContentPage
     {
+        private CreateViewModel _viewModel = new CreateViewModel();
+
         public CreatePage()
         {
             InitializeComponent();
+            BindingContext = _viewModel;
+
             OptionCountPicker.SelectedItem = 2;
             UpdateOptionFields(2);
         }
@@ -30,50 +33,42 @@ namespace VotingApp
             }
         }
 
-        private async void OnHomeClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
-        }
-
         private async void OnSendClicked(object sender, EventArgs e)
         {
-            string surveyTitle = Title.Text?.Trim();
+            string title = Title.Text?.Trim();
+            if (string.IsNullOrEmpty(title)) title = "";
 
-            List<string> options = new List<string>();
+            var options = new List<string>();
             foreach (var child in OptionsContainer.Children)
             {
                 if (child is Entry entry)
                 {
-                    string optionText = entry.Text?.Trim();
-                    if (!string.IsNullOrEmpty(optionText)) options.Add(optionText);
+                    var text = entry.Text?.Trim();
+                    if (!string.IsNullOrEmpty(text)) options.Add(text);
+                    else options.Add("");
                 }
             }
 
             DateTime expiration = ExpirationDatePicker.Date + ExpirationTimePicker.Time;
 
-            int id = await CreateSurvey(surveyTitle, options, expiration);
-
+            int id = await _viewModel.CreateSurveyAsync(title, options, expiration);
             await Shell.Current.GoToAsync($"//{nameof(SurveyPage)}?id={id}");
+            ClearPage();
         }
 
-        private async Task<int> CreateSurvey(string title, List<string> options, DateTime expirationTime)
+        private async void OnHomeClicked(object sender, EventArgs e)
         {
-            using (var context = new AppDbContext())
-            {
-                Random rnd = new Random();
-                Survey s = new Survey { Title = title, ExpirationTime = expirationTime };
-                s.Options = new List<Option>();
+            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+            ClearPage();
+        }
 
-                foreach (string o in options)
-                {
-                    Option op = new Option { Name = o };
-                    for (int i = 0; i < rnd.Next(1, 15); i++) op.Votes.Add(new Vote());
-                    s.Options.Add(op);
-                }
-                await context.Surveys.AddAsync(s);
-                await context.SaveChangesAsync();
-                return s.Id;
-            }
+        private void ClearPage()
+        {
+            Title.Text = "";
+            OptionCountPicker.SelectedItem = 2;
+            UpdateOptionFields(2);
+            ExpirationDatePicker.Date = DateTime.Now;
+            ExpirationTimePicker.Time = DateTime.Now.TimeOfDay;
         }
     }
 }

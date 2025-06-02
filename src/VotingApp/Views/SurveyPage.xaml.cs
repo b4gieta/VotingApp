@@ -1,17 +1,15 @@
-using VotingApp.Models;
-using Microsoft.EntityFrameworkCore;
-using Microcharts;
-using SkiaSharp;
+using VotingApp.ViewModels;
 
 namespace VotingApp
 {
     public partial class SurveyPage : ContentPage, IQueryAttributable
     {
-        private int _id;
+        private SurveyViewModel _viewModel = new SurveyViewModel();
 
         public SurveyPage()
         {
             InitializeComponent();
+            BindingContext = _viewModel;
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -19,94 +17,49 @@ namespace VotingApp
             if (query.TryGetValue("id", out var idValue))
             {
                 string id = idValue as string;
-                _id = int.Parse(id);
-                Display(_id);
+                _viewModel.LoadSurvey(int.Parse(id));
+
+                TitleLabel.Text = _viewModel.Title;
+                ExpirationLabel.Text = _viewModel.Expiration;
+                ChartView.Chart = _viewModel.Chart;
+
+                BuildVotingButtons();
             }
         }
 
-        public void Display(int id)
+        private void BuildVotingButtons()
         {
-            using (var context = new AppDbContext())
+            VotingButtonsStack.Children.Clear();
+
+            foreach (var option in _viewModel.Options)
             {
-                var entries = new List<ChartEntry>();
-
-                Survey survey = context.Surveys
-                    .Where(s => s.Id == id)
-                    .Include(s => s.Options)
-                    .ThenInclude(o => o.Votes)
-                    .First();
-
-                TitleLabel.Text = $"Ankieta #{id}: {survey.Title}";
-
-                ExpirationLabel.Text = $"Wygasa {survey.ExpirationTime.ToString()}";
-
-                int index = 0;
-                foreach (var option in survey.Options)
+                var button = new Button
                 {
-                    int voteCount = option.Votes.Count;
-
-                    entries.Add(new ChartEntry(voteCount)
-                    {
-                        Label = option.Name,
-                        ValueLabel = voteCount.ToString(),
-                        Color = SKColor.Parse(PieColors[index])
-                    });
-                    index++;
-                }
-
-                ChartView.Chart = new PieChart
-                {
-                    Entries = entries,
-                    LabelTextSize = 20,
-                    BackgroundColor = SKColors.White
+                    Text = option.Name,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    MaximumWidthRequest = 500
                 };
 
-                VotingButtonsStack.Children.Clear();
-                foreach (var option in survey.Options)
+                button.Clicked += async (s, e) =>
                 {
-                    var button = new Button
-                    {
-                        Text = option.Name,
-                        Command = new Command(() => VoteForOption(option.Id)),
-                        MaximumWidthRequest = 500,
-                        HorizontalOptions = LayoutOptions.Fill
-                    };
-                    VotingButtonsStack.Children.Add(button);
-                }
+                    await _viewModel.VoteAsync(option.Id);
+                    ChartView.Chart = _viewModel.Chart;
+                    DisableAllButtons();
+                };
 
-                if (survey.ExpirationTime < DateTime.Now)
-                {
-                    foreach (var child in VotingButtonsStack.Children)
-                    {
-                        if (child is Button button) button.IsEnabled = false;
-                    }
-                }
+                VotingButtonsStack.Children.Add(button);
             }
+
+            if (_viewModel.IsExpired) DisableAllButtons();
         }
 
-        private async void VoteForOption(int optionId)
+        private void DisableAllButtons()
         {
-            using (var context = new AppDbContext())
+            foreach (var child in VotingButtonsStack.Children)
             {
-                Survey survey = context.Surveys
-                    .Include(s => s.Options)
-                    .ThenInclude(o => o.Votes)
-                    .First(s => s.Id == _id);
-
-                var selectedOption = survey.Options.First(o => o.Id == optionId);
-                selectedOption.Votes.Add(new Vote());
-                await context.SaveChangesAsync();
-
-                Display(_id);
-
-                foreach (var child in VotingButtonsStack.Children)
-                {
-                    if (child is Button button) button.IsEnabled = false;
-                }
+                if (child is Button btn) btn.IsEnabled = false;
             }
         }
-
-        private string[] PieColors = { "#F44336", "#2196F3", "#4CAF50", "#FFC107" };
 
         private async void OnHomeClicked(object sender, EventArgs e)
         {
