@@ -6,26 +6,36 @@
     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
-            Spacing="25">
+            Spacing="25"
+            MaximumWidthRequest="500">
             <Button
                 x:Name="RestartBtn"
                 Text="Zresetuj stan bazy" 
                 Clicked="OnResetClicked"
                 HorizontalOptions="Fill" />
-            
-            <Entry x:Name="Check"
-               Placeholder="Enter survey name"/>
 
             <Button
-                x:Name="CheckBtn"
-                Text="Sprawdź" 
-                Clicked="OnCheckClicked"
+                x:Name="NewSurveyBtn"
+                Text="Utwórz ankietę" 
+                Clicked="OnCreateNewClicked"
                 HorizontalOptions="Fill" />
 
-            <Label
-                x:Name="CheckResult"
-                Text=""
-                />
+            <StackLayout Spacing="5">
+                <Entry x:Name="Check"
+                   Placeholder="Wprowadź id ankiety"
+                   HorizontalOptions="Fill"/>
+
+                <Button
+                    x:Name="CheckBtn"
+                    Text="Sprawdź ankietę" 
+                    Clicked="OnCheckClicked"
+                    HorizontalOptions="Fill" />
+                <Label
+                    x:Name="CheckResult"
+                    Text="" />
+            </StackLayout>            
+
+            
         </VerticalStackLayout>
     </ScrollView>
 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="VotingApp.CreatePage"
+             Title="Utwórz ankietę">
+
+    <ScrollView>
+        <VerticalStackLayout
+        MaximumWidthRequest="500"
+        Spacing="25">
+
+            <Button
+                x:Name="HomeBtn"
+                Text="🏠" 
+                Clicked="OnHomeClicked"
+                MaximumWidthRequest="50"/>
+
+            <StackLayout Spacing="5">
+                <Label Text="Podaj tytuł ankiety:" />
+                <Entry x:Name="Title"
+           Placeholder="Wprowadź tytuł ankiety"
+           HorizontalOptions="Fill"/>
+            </StackLayout>
+
+            <StackLayout Spacing="5">
+                <Label Text="Wybierz liczbę opcji:" />
+
+                <Picker x:Name="OptionCountPicker"
+                SelectedIndexChanged="OptionCountChanged">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:Int32}">
+                            <x:Int32>2</x:Int32>
+                            <x:Int32>3</x:Int32>
+                            <x:Int32>4</x:Int32>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+                <StackLayout x:Name="OptionsContainer" />
+            </StackLayout>
+
+            <StackLayout Spacing="5">
+                <Label Text="Data ważności:" />
+                <DatePicker x:Name="ExpirationDatePicker" />
+            </StackLayout>
+
+            <StackLayout Spacing="5">
+                <Label Text="Godzina ważności:" />
+                <TimePicker x:Name="ExpirationTimePicker" />
+            </StackLayout>
+
+            <Button
+                x:Name="SendBtn"
+                Text="Utwórz" 
+                Clicked="OnSendClicked"
+                HorizontalOptions="Fill" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

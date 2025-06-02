@@ -8,8 +8,15 @@
     Title="VotingApp">
 
     <ShellContent
-        Title="Home"
+        Title="VotingApp"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-
+    <ShellContent
+        Title="VotingApp"
+        ContentTemplate="{DataTemplate local:CreatePage}"
+        Route="CreatePage" />
+    <ShellContent
+        Title="VotingApp"
+        ContentTemplate="{DataTemplate local:SurveyPage}"
+        Route="SurveyPage" />
 </Shell>

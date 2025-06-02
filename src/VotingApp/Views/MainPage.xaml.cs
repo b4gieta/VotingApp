@@ -13,15 +13,20 @@ namespace VotingApp
             _viewModel = new MainViewModel();
         }
 
-        private void OnCheckClicked(object sender, EventArgs e)
+        private async void OnCheckClicked(object sender, EventArgs e)
         {
-            if (_viewModel.SurveyExists(Check.Text)) CheckResult.Text = $"Ankieta \"{Check.Text}\" istnieje i ma {_viewModel.CountVotes(Check.Text)} głosów";
-            else CheckResult.Text = $"Ankieta \"{Check.Text}\" nie istnieje";
+            if (int.TryParse(Check.Text, out int id) && _viewModel.SurveyExists(id)) await Shell.Current.GoToAsync($"//{nameof(SurveyPage)}?id={id}");
+            else CheckResult.Text = "Ankieta nie istnieje";
         }
 
         private async void OnResetClicked(object sender, EventArgs e)
         {
             await AppDbContext.SetStartingData();
+        }
+
+        private async void OnCreateNewClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync($"//{nameof(CreatePage)}");
         }
     }
 }
